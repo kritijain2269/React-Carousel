@@ -1,0 +1,13 @@
+.card{
+    &-image{
+        display: block;
+          width: 100%;
+          max-width: 100%; 
+    }
+
+    &-details{
+        padding: 10px;
+        height: 18px;
+        text-align: left;
+    }
+}

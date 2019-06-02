@@ -1,0 +1,19 @@
+.app {
+  text-align: center;
+  h1{
+    font-size: 50px;
+  }
+
+  &-header{
+    background-color: #D4D0CF;
+    padding-left: 20px;
+    color: #094C9D;
+    text-align: left;
+  }
+}
+
+.carousel-wrapper{
+  width: 80%;
+  margin: 60px auto;
+  height:375px;
+}

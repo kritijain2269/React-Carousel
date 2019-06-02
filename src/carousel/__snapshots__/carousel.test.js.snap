@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders without crashing should render as expected 1`] = `ShallowWrapper {}`;
+
+exports[`renders without crashing should render as expected on componentWillUnmount 1`] = `ShallowWrapper {}`;
+
+exports[`renders without crashing should render as expected when activeIndex length is 1 1`] = `ShallowWrapper {}`;
+
+exports[`renders without crashing should render images based on window size for desktop 1`] = `ShallowWrapper {}`;
+
+exports[`renders without crashing should render images based on window size for mobile 1`] = `ShallowWrapper {}`;
+
+exports[`renders without crashing should render images based on window size for tablet 1`] = `ShallowWrapper {}`;

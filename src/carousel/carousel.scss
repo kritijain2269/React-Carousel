@@ -1,0 +1,75 @@
+$size: 35px;
+
+.carousel {
+  overflow: hidden;
+  width: 100%;
+
+  .slides {
+    list-style: none;
+    position: relative;
+    width: 100%;
+    display: flex;
+    padding: 0;
+
+    li {
+      position: relative;
+      float: left;
+      width: 100%;
+      padding: 10px;
+    }
+  }
+
+  .carousel-controls {
+    top: 35%;
+    width: 94%;
+    margin-left: 9px;
+    position: absolute;
+
+    .control {
+      height: $size * 3;
+      width: 60px;
+      background: #9e978e;
+      cursor: pointer;
+      opacity: 0.7;
+
+      &-left {
+        float: left;
+        border-bottom-right-radius: $size * 2;
+        border-top-right-radius: $size * 2;
+      }
+
+      &-right {
+        float: right;
+        border-bottom-left-radius: $size * 2;
+        border-top-left-radius: $size * 2;
+      }
+    }
+
+    .arrow {
+      height: $size * 3;
+      width: $size;
+
+      &-left {
+        float: left;
+        transform: rotate(-180deg);
+      }
+
+      &-right {
+        float: right;
+      }
+    }
+  }
+
+  .button {
+    &-prev {
+      border-bottom-left-radius: 7px;
+      border-top-left-radius: 7px;
+      margin-right: 5px;
+    }
+
+    &-next {
+      border-bottom-right-radius: 7px;
+      border-top-right-radius: 7px;
+    }
+  }
+}
