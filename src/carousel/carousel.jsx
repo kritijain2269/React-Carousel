@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment, createRef } from "react";
 import "./carousel.scss";
 import Card from "./card/card";
 import arrow from "../assets/image/arrow.svg";
@@ -13,6 +13,7 @@ class Carousel extends Component {
       activeIndexList: desktop,
       windowWidth: window.innerWidth
     };
+    this.elementRef = createRef();
   }
 
   componentDidMount() {
@@ -45,6 +46,7 @@ class Carousel extends Component {
       x === 0 ? items.length - 1 : x - 1
     );
     this.setState({ activeIndexList: newActiveIndexList });
+    this.elementRef.current.firstChild.focus();
   };
 
   onNextClick = () => {
@@ -53,32 +55,57 @@ class Carousel extends Component {
       x === items.length - 1 ? 0 : x + 1
     );
     this.setState({ activeIndexList: newActiveIndexList });
+    this.elementRef.current.lastChild.focus();
+  };
+
+  onKeyDown = event => {
+    if (event.key === "Enter") {
+      if (event.target.id === "prev-btn") {
+        this.onPrevClick();
+      } else if (event.target.id === "next-btn") {
+        this.onNextClick();
+      }
+    }
   };
 
   render() {
     const { items, activeIndexList } = this.state;
-
+    
     return (
       <div className="carousel">
-        <ul className="slides">
+        <ul className="slides"  ref={this.elementRef}>
           {items.length > 0 &&
             activeIndexList.map((activeIndex, index) => {
               return (
-                <li key={index} tabIndex="0">
-                  <Card item={items[activeIndex]} />
+                <li className="slides-list" key={index} tabIndex="0">
+                  <Card item={items[activeIndex]}/>
                 </li>
               );
             })}
           {activeIndexList.length === 1 && (
             <div className="carousel-controls">
-              <div className="control control-left" onClick={this.onPrevClick}>
+              <div
+                id="prev-btn"
+                role="button"
+                tabIndex="0"
+                className="control control-left"
+                onClick={this.onPrevClick}
+                onKeyDown={this.onKeyDown}
+              >
                 <img
                   src={arrow}
                   className="arrow arrow-left"
                   alt="carousel arrow left"
                 />
               </div>
-              <div className="control control-right" onClick={this.onNextClick}>
+              <div
+                id="next-btn"
+                role="button"
+                tabIndex="0"
+                className="control control-right"
+                onClick={this.onNextClick}
+                onKeyDown={this.onKeyDown}
+              >
                 <img
                   src={arrow}
                   className="arrow arrow-right"

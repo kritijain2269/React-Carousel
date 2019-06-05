@@ -1,7 +1,6 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 import Carousel from "./carousel";
-import { exportAllDeclaration, jsxEmptyExpression } from "@babel/types";
 
 describe("renders without crashing", () => {
   const items = [
@@ -93,6 +92,9 @@ describe("renders without crashing", () => {
     }
   ];
   const defaultProps = {
+    onKeyDown: jest.fn(),
+    onPrevClick: jest.fn(),
+    onNextClick: jest.fn(),
     activeIndexList: [0, 1, 2, 3, 4],
     items,
     item: {
@@ -102,63 +104,100 @@ describe("renders without crashing", () => {
       likes: 123
     }
   };
-  const component = shallow(<Carousel {...defaultProps} />);
+  const shallowComponent = shallow(<Carousel {...defaultProps} />);
+  const mountComponent = mount(<Carousel {...defaultProps} />);
 
   it("should render as expected", () => {
-    component.setState({ items: defaultProps.items });
-    expect(component).toMatchSnapshot();
+    shallowComponent.setState({ items: defaultProps.items });
+    expect(shallowComponent).toMatchSnapshot();
   });
 
   it("should render as expected when activeIndex length is 1", () => {
-    component.setState({ activeIndexList: [0] });
-    expect(component).toMatchSnapshot();
+    shallowComponent.setState({ activeIndexList: [0] });
+    expect(shallowComponent).toMatchSnapshot();
   });
 
   it("should render as expected on componentWillUnmount", () => {
-    component.instance().componentWillUnmount();
-    expect(component).toMatchSnapshot();
+    shallowComponent.instance().componentWillUnmount();
+    expect(shallowComponent).toMatchSnapshot();
   });
 
   it("should render images based on window size for mobile", () => {
     global.innerWidth = 400;
-    component.instance().resize();
-    expect(component).toMatchSnapshot();
+    shallowComponent.instance().resize();
+    expect(shallowComponent).toMatchSnapshot();
   });
 
   it("should render images based on window size for tablet", () => {
     global.innerWidth = 700;
-    component.instance().resize();
-    expect(component).toMatchSnapshot();
+    shallowComponent.instance().resize();
+    expect(shallowComponent).toMatchSnapshot();
   });
 
   it("should render images based on window size for desktop", () => {
     global.innerWidth = 900;
-    component.instance().resize();
-    expect(component).toMatchSnapshot();
+    shallowComponent.instance().resize();
+    expect(shallowComponent).toMatchSnapshot();
   });
 
   it("should render next image on click of next button", () => {
-    component.setState({ activeIndexList: [0], items });
-    component.instance().onNextClick();
-    expect(component.state().activeIndexList).toEqual([1]);
+    mountComponent.setState({ activeIndexList: [0], items });
+    mountComponent.instance().onNextClick();
+    expect(mountComponent.state().activeIndexList).toEqual([1]);
   });
 
   it("should render images in cyclic order on click of next button", () => {
-    component.setState({ activeIndexList: [2], items });
-    component.instance().onNextClick();
-    expect(component.state().activeIndexList).toEqual([0]);
+    mountComponent.setState({ activeIndexList: [2], items });
+    mountComponent.instance().onNextClick();
+    expect(mountComponent.state().activeIndexList).toEqual([0]);
   });
 
   it("should render previous image on click of previous button", () => {
-    component.setState({ activeIndexList: [0], items });
-    component.instance().onPrevClick();
-    expect(component.state().activeIndexList).toEqual([2]);
+    mountComponent.setState({ activeIndexList: [0], items });
+    mountComponent.instance().onPrevClick();
+    expect(mountComponent.state().activeIndexList).toEqual([2]);
   });
 
   it("should render images in cyclic order on click of previous button", () => {
-    component.setState({ activeIndexList: [1], items });
-    component.instance().onPrevClick();
-    expect(component.state().activeIndexList).toEqual([0]);
+    mountComponent.setState({ activeIndexList: [1], items });
+    mountComponent.instance().onPrevClick();
+    expect(mountComponent.state().activeIndexList).toEqual([0]);
+  });
+
+  // it("should call onKeyDown when Enter is pressed on previous button", () => {
+  //   mountComponent.setState({ activeIndexList: [0], items });
+  //   mountComponent.find('#prev-btn').simulate('keyDown', { key: 'Enter', target: { id: 'prev-btn' } })
+  //   expect(defaultProps.onKeyDown).toHaveBeenCalled();
+  // });
+
+  // it("should call onKeyDown when Enter is pressed on next button", () => {
+  //   mountComponent.setState({ activeIndexList: [0], items });
+  //   mountComponent.find('#next-btn').simulate('keyDown', { key: 'Enter', target: { id: 'next-btn' } })
+  //   expect(defaultProps.onKeyDown).toHaveBeenCalled();
+  // });
+
+  it("should call onKeyDown when Enter is pressed on next arrow button", () => {
+    mountComponent.setState({ activeIndexList: [0], items });
+    mountComponent.instance().onKeyDown({ key: 'Enter', target: { id: 'next-btn' } });
+    expect(mountComponent.state().activeIndexList).toEqual([1]);
+  });
+
+  it("should call onKeyDown when Enter is pressed on previous arrow button", () => {
+    mountComponent.setState({ activeIndexList: [1], items });
+    mountComponent.instance().onKeyDown({ key: 'Enter', target: { id: 'prev-btn' } });
+    expect(mountComponent.state().activeIndexList).toEqual([0]);
+  });
+
+  it("should not change card when enter is pressed on any other button apart from next-btn or prev-btn", () => {
+    mountComponent.setState({ activeIndexList: [1], items });
+    mountComponent.instance().onKeyDown({ key: 'Enter', target: { id: 'test-btn' } });
+    expect(mountComponent.state().activeIndexList).toEqual([1]);
+  });
+
+  it("should not change card when any other key apart from Enter key is pressed", () => {
+    mountComponent.setState({ activeIndexList: [1], items });
+    mountComponent.instance().onKeyDown({ key: 'Space', target: { id: 'next-btn' } });
+    expect(mountComponent.state().activeIndexList).toEqual([1]);
   });
 
   it("should render as expected on componentDidMount", () => {
@@ -166,7 +205,7 @@ describe("renders without crashing", () => {
     const mockJsonPromise = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise = Promise.resolve({ json: () => mockJsonPromise });
     jest.spyOn(global, "fetch").mockImplementation(() => mockFetchPromise);
-    component.instance().componentDidMount();
-    expect(component.state().items.length).toEqual(items.length);
+    shallowComponent.instance().componentDidMount();
+    expect(shallowComponent.state().items.length).toEqual(items.length);
   });
 });
